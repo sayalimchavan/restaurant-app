@@ -5,7 +5,8 @@ let datasetArr = [
     borderWidth: 1,
     hoverBackgroundColor: "rgba(163, 161, 251, 0.8)",
     hoverBorderColor: "rgba(163, 161, 251, 0.8)",
-    data: [20,50,80,60]
+    data: [],
+    maxBarThickness: 70
   }
 ]
 
@@ -37,7 +38,7 @@ export const ChartOptions = {
         minRotation: 0
       },
       // barThickness: 16,
-       maxBarThickness: 50
+       //maxBarThickness: 50
     }],
     yAxes: [{
       ticks: {

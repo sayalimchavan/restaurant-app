@@ -42,12 +42,51 @@ class OrderReportComponent extends Component {
       console.log("menuArr", this.state.menuArr)
     });
 
+    //add category field to menu array
+    var result = this.state.menuArr.map(function (el) {
+      var o = Object.assign({}, el);
+      o.category = "";
+      return o;
+    });
+    this.setState({
+      menuArr: result
+    });
+    
     //get menu data
     axios.get("http://localhost:4000/menu/getmenu").then(response => {
       this.data = response.data;
-      
+      this.state.menuArr.forEach((mItem) => {
+        let obj = this.data.find((me) => me._id == mItem.menuid);
+        mItem.category = obj.category;
+      });
      
     });
+
+     
+    
+  }
+  handleUpdate = (e) =>{
+       //group by category
+       const ourCount = {};
+       let currArr = this.state.menuArr;
+       this.state.menuArr.forEach(entry => {
+           if(!ourCount[entry.category]){
+           ourCount[entry.category] = 0;
+           }
+           ourCount[entry.category]+= entry.qtyOrdered;
+         });
+   
+         //console.log("grouped",ourCount, "part", ourCount["Starters"])
+
+         let ChartData = { ...this.state.ChartData }
+      let datasetArr = ChartData.datasets;
+
+      datasetArr[0].data = [ourCount["Starters"],ourCount["Main Course"],ourCount["Dessert"],ourCount["Drinks"]];
+      this.setState(
+        {
+          ChartData
+        }
+      );
   }
   handleLogout = (e) => {
     e.preventDefault();
@@ -83,7 +122,9 @@ class OrderReportComponent extends Component {
         {/* Chart */}
         <div className="chart-section">
                       <span><b>Category vs Orders report</b></span>
-
+                      <Button color="primary" onClick={this.handleUpdate}>
+                              Show data
+                      </Button>
                           <Bar
                             data={this.state.ChartData}
                             options={this.state.ChartOptions}
